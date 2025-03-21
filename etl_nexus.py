@@ -778,7 +778,8 @@ def get_4_4_3_2():
 # indicator 4.4.4.2
 def get_4_4_4_2():
 
-    tjn_df = pd.read_csv('data/tjn data.csv').rename(columns={'country_name': 'Country'}).drop(columns=['cthi_2019_score', 'cthi_2021_score', 'cthi_2019_rank', 'cthi_2021_rank', 'cthi_2019_share', 'cthi_2021_share', 'sotj20_loss_corp_musd', 'sotj21_loss_corp_musd', 'sotj23_loss_corp_musd', 'sotj20_loss_total_share_healthexpenses', 'sotj21_loss_total_share_healthexpenses', 'sotj23_loss_total_musd', 'sotj23_loss_total_share_healthexpenses'])
+    tjn_df = pd.read_csv('data/tjn data.csv').rename(columns={'country_name': 'Country'}).drop(columns=['cthi_2019_score', 'cthi_2021_score', 'cthi_2019_rank', 'cthi_2021_rank', 
+    'cthi_2019_share', 'cthi_2021_share'])
     tjn_df_long = pd.melt(tjn_df, id_vars=['Country', 'iso3'], var_name='year', value_name='value')
     tjn_df_long['year'] = tjn_df_long['year'].str.extract(r'(\d{4})')
     tjn_df_long['indicator code'] = 'FSI'
