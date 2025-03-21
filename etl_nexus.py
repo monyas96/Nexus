@@ -516,7 +516,7 @@ def get_4_4_3_1g():
 get_4_4_3_1g()
 # Function to get and save Institutions to Combat Crime indicator - World Justice Project
 def get_4_4_3_1h():
-    institutions_combat_crime = pd.read_excel('wjp rule of law.xlsxx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']]
+    institutions_combat_crime = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']]
     institutions_combat_crime.to_csv('4.4.3.1h_Institutions_to_Combat_Crime.csv', index=False)
 get_4_4_3_1h()
 
