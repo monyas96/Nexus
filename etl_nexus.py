@@ -143,7 +143,7 @@ indicator4_2_2_2a = get_4_2_2_2a()
 indicator4_2_2_1a.to_csv('indicator_4_2_2_1a.csv', index=False)
 
 #4_2_2_1b it has gap cpacity and buoyancy
-file_path = 'C:/Users/MYASSIEN/WB_TAX CPACITY AND GAP.csv'
+file_path = 'WB_TAX CPACITY AND GAP.csv'
 df = pd.read_csv(file_path)
 # Define the function to reshape the dataset
 def reshape_tax_data(df):
@@ -487,7 +487,7 @@ def get_4_4_2_4():
 ######################################################################################
 # indicator 4.4.3.1 has several indicators
 def get_4_4_3_1b():
-    wjp_rule_of_law = pd.read_excel('C:/Users/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'WJP Rule of Law Index: Overall Score']]
+    wjp_rule_of_law = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'WJP Rule of Law Index: Overall Score']]
 get_4_4_3_1b()
 # Function to get and save Rule of Law & Justice indicator - Mo Ibrahim
 def get_4_4_3_1c():
@@ -511,12 +511,12 @@ def get_4_4_3_1f():
 get_4_4_3_1f()
 # Function to get and save Public Access to Information indicator - World Justice Project
 def get_4_4_3_1g():
-    public_access_information = pd.read_excel('C:/Users/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 3: Open Government']]
+    public_access_information = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 3: Open Government']]
     public_access_information.to_csv('4.4.3.1g_Public_Access_to_Information.csv', index=False)
 get_4_4_3_1g()
 # Function to get and save Institutions to Combat Crime indicator - World Justice Project
 def get_4_4_3_1h():
-    institutions_combat_crime = pd.read_excel('C:/Users/wjp rule of law.xlsxx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']]
+    institutions_combat_crime = pd.read_excel('wjp rule of law.xlsxx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']]
     institutions_combat_crime.to_csv('4.4.3.1h_Institutions_to_Combat_Crime.csv', index=False)
 get_4_4_3_1h()
 
