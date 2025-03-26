@@ -185,30 +185,20 @@ print(filtered_df.head())
 # Save the filtered DataFrame to a CSV file
 filtered_df.to_csv('outputs/indicator_4_2_1_2.csv', index=False)
 ############################################################################################
-# USAID indicator 4.2.2.1a and 4.2.2.1b: DONE!
+# USAID indicator 4.2.2.1a  DONE!
 # Define the function to get the indicator
-def get_4_2_2_1a():
-    usaid_df = pd.read_excel('data/USAID tax effort and buyancy.xlsx', engine='openpyxl', sheet_name='Data')
-
-    iso3_reference_df = pd.read_csv('data/iso3_country_reference.csv')
-    africa_iso3 = list(wb.region.members('AFR'))
-
-    africa_iso3_df = iso3_reference_df[iso3_reference_df['iso3'].isin(africa_iso3)]
-
-    usaid_df = usaid_df[usaid_df['country_id'].isin(africa_iso3_df['iso3'])]
-
-    indicator_4_2_2_1a = usaid_df[usaid_df['country_id'].notna()][['country_id', 'country_name', 'year', 'Tax effort (ratio) [tax_eff]']]
-    indicator_4_2_2_1a = indicator_4_2_2_1a.rename(columns={'Tax effort (ratio) [tax_eff]': 'Value'})
-    indicator_4_2_2_1a['Indicator'] = 'Tax effort (ratio)'
-
-    return indicator_4_2_2_1a[['country_name', 'year', 'Indicator', 'Value']]
-
-indicator_4_2_2_1a = get_4_2_2_1a()
+usaid_df = pd.read_excel('data/USAID tax effort and buyancy.xlsx', engine='openpyxl', sheet_name='Data')
+iso3_reference_df = pd.read_csv('data/iso3_country_reference.csv')
+africa_iso3_df = iso3_reference_df[iso3_reference_df['Region Name'] == 'Africa']
+usaid_df = usaid_df[usaid_df['country_name'].isin(africa_iso3_df['Country or Area'])]
+indicator_4_2_2_1a = usaid_df[usaid_df['country_id'].notna()][['country_id', 'country_name', 'year', 'Tax effort (ratio) [tax_eff]']]
+indicator_4_2_2_1a = indicator_4_2_2_1a.rename(columns={'Tax effort (ratio) [tax_eff]': 'Value'})
+indicator_4_2_2_1a['Indicator'] = 'Tax effort (ratio)'
+indicator_4_2_2_1a = indicator_4_2_2_1a[['country_name', 'year', 'Indicator', 'Value']]
 indicator_4_2_2_1a.to_csv('outputs/indicator_4_2_2_1a.csv', index=False)
-
-
+#World Bank Revenue Dashboard
 #4_2_2_1b it has gap cpacity and buoyancy
-file_path = 'WB_TAX CPACITY AND GAP.csv'
+file_path = 'data/WB_TAX CPACITY AND GAP.csv'
 df = pd.read_csv(file_path)
 # Define the function to reshape the dataset
 def reshape_tax_data(df):
@@ -236,153 +226,170 @@ def reshape_tax_data(df):
 indicator4_2_2_1b = reshape_tax_data(df)
 
 # Save the reshaped DataFrame to a CSV file
-indicator4_2_2_1b.to_csv('indicator4_2_2_1b.csv', index=False)
+indicator4_2_2_1b.to_csv('outputs/indicator4_2_2_1b.csv', index=False)
 
 ####################################################################################
-
+#OSAA
 # indicator 4.3.1.1
-def get_4_3_1_1():
+# Define the function to get the indicator
+def get_4_3_1_1(output_dir='outputs'):
 
-    # get market cap and GDP
+    # Get market cap and GDP data
     market_cap = wb.data.DataFrame('CM.MKT.LCAP.CD', wb.region.members('AFR'))
     gdp = wb.data.DataFrame('NY.GDP.MKTP.CD', wb.region.members('AFR'))
 
-    # calculate indicator
+    # Calculate the indicator (Market capitalization / GDP * 100)
     indicator4_3_1_1 = (market_cap / gdp) * 100
     indicator4_3_1_1 = indicator4_3_1_1.reset_index()
-
-    # make long format
     indicator4_3_1_1_long = pd.melt(indicator4_3_1_1, id_vars=['economy'], var_name='year', value_name='value')
-
-    # extract year value
     indicator4_3_1_1_long['year'] = indicator4_3_1_1_long['year'].str.extract(r'(\d{4})')
 
-    # add indicator code and description
+    # Add indicator description and code
     indicator4_3_1_1_long['indicator description'] = 'Market capitalization of listed domestic companies (current US$) divided by GDP (current US$)'
     indicator4_3_1_1_long['indicator code'] = 'CM.MKT.LCAP.CD / NY.GDP.MKTP.CD'
 
-    # Rename 'economy' column to 'iso3'
+    # Add the 'Indicator label' column
+    indicator4_3_1_1_long['Indicator label'] = 'Market capitalization in USD as percentage of GDP'
     indicator4_3_1_1_long = indicator4_3_1_1_long.rename(columns={'economy': 'iso3'})
+    indicator4_3_1_1_long = indicator4_3_1_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
 
-    # reorder columns
-    indicator4_3_1_1_long = indicator4_3_1_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
 
+    # Save the resulting DataFrame to CSV
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_1.csv')
+    indicator4_3_1_1_long.to_csv(file_path, index=False)
     return indicator4_3_1_1_long
 
-
-# indicator 4.3.1.2
-def get_4_3_1_2():
+#WB - WDI
+#indicator 4_3_1_2
+# Call the function and save the data
+def get_4_3_1_2(output_dir='outputs'):
     indicator4_3_1_2 = wb.data.DataFrame('DT.NFL.BOND.CD', wb.region.members('AFR')).reset_index()
 
-    # make long format
+    # Convert to long format
     indicator4_3_1_2_long = pd.melt(indicator4_3_1_2, id_vars=['economy'], var_name='year', value_name='value')
 
-    # extract year value
+    # Extract year value from the 'year' column
     indicator4_3_1_2_long['year'] = indicator4_3_1_2_long['year'].str.extract(r'(\d{4})')
 
-    # add indicator code and description
+    # Add indicator description and code
     indicator4_3_1_2_long['indicator description'] = 'Portfolio investment, bonds (PPG + PNG) (NFL, current US$)'
     indicator4_3_1_2_long['indicator code'] = 'DT.NFL.BOND.CD'
-
-    # Rename 'economy' column to 'iso3'
     indicator4_3_1_2_long = indicator4_3_1_2_long.rename(columns={'economy': 'iso3'})
-
-    # reorder columns
     indicator4_3_1_2_long = indicator4_3_1_2_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
-
+    os.makedirs(output_dir, exist_ok=True)
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_2.csv')
+    indicator4_3_1_2_long.to_csv(file_path, index=False)
+    print(f"Indicator data saved to '{file_path}'")
     return indicator4_3_1_2_long
+get_4_3_1_2(output_dir='outputs')
 
-
+#OSAA
 # indicator 4.3.1.3
-def get_4_3_1_3():
-
-    # get reserves and debt
+# Define the function to get the indicator
+def get_4_3_1_3(output_dir='outputs'):
+    # Get reserves and debt
     reserves = wb.data.DataFrame('BN.RES.INCL.CD', wb.region.members('AFR'))
     debt = wb.data.DataFrame('DT.DOD.DSTC.CD', wb.region.members('AFR'))
 
-    # calculate indicator
+    # Calculate the indicator
     indicator4_3_1_3 = reserves / debt
     indicator4_3_1_3 = indicator4_3_1_3.reset_index()
 
-    # make long format
+    # Make long format
     indicator4_3_1_3_long = pd.melt(indicator4_3_1_3, id_vars=['economy'], var_name='year', value_name='value')
 
-    # extract year value
+    # Extract year value
     indicator4_3_1_3_long['year'] = indicator4_3_1_3_long['year'].str.extract(r'(\d{4})')
 
-    # add indicator code and description
+    # Add indicator code and description
     indicator4_3_1_3_long['indicator description'] = 'Reserves and related items (BoP, current US$) divided by External debt stocks, short-term (DOD, current US$)'
     indicator4_3_1_3_long['indicator code'] = 'BN.RES.INCL.CD / DT.DOD.DSTC.CD'
+
+    # Add the new indicator column
+    indicator4_3_1_3_long['Indicator label'] = 'Adequacy of International Reserves'
 
     # Rename 'economy' column to 'iso3'
     indicator4_3_1_3_long = indicator4_3_1_3_long.rename(columns={'economy': 'iso3'})
 
-    # reorder columns
-    indicator4_3_1_3_long = indicator4_3_1_3_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
+    # Reorder columns
+    indicator4_3_1_3_long = indicator4_3_1_3_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
+
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save the resulting DataFrame to CSV
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_3.csv')
+    indicator4_3_1_3_long.to_csv(file_path, index=False)
+    print(f"Indicator data saved to '{file_path}'")
 
     return indicator4_3_1_3_long
 
+# Call the function and save the data
+get_4_3_1_3(output_dir='outputs')
 
+
+#OSAA
 # indicator 4.3.2.1
-def get_4_3_2_1():
+def get_4_3_2_1(output_dir='outputs'):
 
-    # get banking sector indicators
     capital_to_assets = wb.data.DataFrame('FB.BNK.CAPA.ZS', wb.region.members('AFR'))
     liquid_reserves_to_assets = wb.data.DataFrame('FD.RES.LIQU.AS.ZS', wb.region.members('AFR'))
     domestic_credit = wb.data.DataFrame('FS.AST.DOMS.GD.ZS', wb.region.members('AFR')) / 100
 
-    # normalize indicators
     def min_max_normalize(df):
         return (df - df.min()) / (df.max() - df.min())
 
-    # calculate banking sector strength score from indicators
     capital_to_assets = min_max_normalize(capital_to_assets) * 0.4
     liquid_reserves_to_assets = min_max_normalize(liquid_reserves_to_assets) * 0.3
-    domestic_credit  = min_max_normalize(domestic_credit) * 0.3
+    domestic_credit = min_max_normalize(domestic_credit) * 0.3
     indicator4_3_2_1 = (capital_to_assets + liquid_reserves_to_assets + domestic_credit)
     indicator4_3_2_1 = indicator4_3_2_1.reset_index()
 
-    # make long format
     indicator4_3_2_1_long = pd.melt(indicator4_3_2_1, id_vars=['economy'], var_name='year', value_name='value')
-
-    # extract year value
     indicator4_3_2_1_long['year'] = indicator4_3_2_1_long['year'].str.extract(r'(\d{4})')
 
-    # add indicator code and description
     indicator4_3_2_1_long['indicator description'] = '(0.4 * Bank capital to assets ratio (%)) + (0.3 * Bank liquid reserves to bank assets ratio (%)) + (0.3 * Domestic credit provided by financial sector (% of GDP))'
     indicator4_3_2_1_long['indicator code'] = '(0.4 * FB.BNK.CAPA.ZS) + (0.3 * FD.RES.LIQU.AS.ZS) + (0.3 * FS.AST.DOMS.GD.ZS)'
 
-    # Rename 'economy' column to 'iso3'
-    indicator4_3_2_1_long = indicator4_3_2_1_long.rename(columns={'economy': 'iso3'})
+    indicator4_3_2_1_long['Indicator label'] = 'Banking Sector Development Index'
 
-    # reorder columns
-    indicator4_3_2_1_long = indicator4_3_2_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
-    
+    indicator4_3_2_1_long = indicator4_3_2_1_long.rename(columns={'economy': 'iso3'})
+    indicator4_3_2_1_long = indicator4_3_2_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
+
+    os.makedirs(output_dir, exist_ok=True)
+    file_path = os.path.join(output_dir, 'indicator_4_3_2_1.csv')
+    indicator4_3_2_1_long.to_csv(file_path, index=False)
+
     return indicator4_3_2_1_long
 
+get_4_3_2_1(output_dir='outputs')
 
+#WB - WDI
 # indicator 4.3.2.2
-def get_4_3_2_2():
+def get_4_3_2_2(output_dir='outputs'):
     indicator4_3_2_2 = wb.data.DataFrame('FS.AST.DOMS.GD.ZS', wb.region.members('AFR')).reset_index()
 
-    # make long format
     indicator4_3_2_2_long = pd.melt(indicator4_3_2_2, id_vars=['economy'], var_name='year', value_name='value')
 
-    # extract year value
     indicator4_3_2_2_long['year'] = indicator4_3_2_2_long['year'].str.extract(r'(\d{4})')
 
-    # add indicator code and description
     indicator4_3_2_2_long['indicator description'] = 'Domestic credit provided by financial sector (% of GDP)'
     indicator4_3_2_2_long['indicator code'] = 'FS.AST.DOMS.GD.ZS'
 
-    # Rename 'economy' column to 'iso3'
-    indicator4_3_2_2_long = indicator4_3_2_2_long.rename(columns={'economy': 'iso3'})
+    indicator4_3_2_2_long['Indicator label'] = 'Domestic Credit to GDP Ratio'
 
-    # reorder columns
-    indicator4_3_2_2_long = indicator4_3_2_2_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
+    indicator4_3_2_2_long = indicator4_3_2_2_long.rename(columns={'economy': 'iso3'})
+    indicator4_3_2_2_long = indicator4_3_2_2_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
+
+    os.makedirs(output_dir, exist_ok=True)
+    file_path = os.path.join(output_dir, 'indicator_4_3_2_2.csv')
+    indicator4_3_2_2_long.to_csv(file_path, index=False)
 
     return indicator4_3_2_2_long
 
+get_4_3_2_2(output_dir='outputs')
 
 
 # TODO: indicator 4.3.3.1
@@ -407,6 +414,9 @@ def get_4_4_2_1():
     # indicator4_4_2_1['iso3'] = indicator4_4_2_1['Country'].apply(lambda x: wb.economy.coder(x) if pd.notnull(x) else None)
 
     # TODO: get trade mis-invoicing and calculate indicator 4.4.2.1 - DONT WORRY ABOUT THIS FOR NOW
+
+#GFI 
+#indicator4_4_2_1
 
     def add_indicator_cols(df, code, description):
         df['indicator_code'] = code
