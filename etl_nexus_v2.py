@@ -418,34 +418,51 @@ def get_4_4_2_1():
 #GFI 
 #indicator4_4_2_1
 
-    def add_indicator_cols(df, code, description):
-        df['indicator_code'] = code
-        df['indicator_description'] = description
-        return df
+  
+def add_indicator_cols(df, code, description):
+    df['indicator_code'] = code
+    df['indicator_description'] = description
+    return df
 
-    gfi_table_a = pd.read_excel('data/gfi trade mispricing.xlsx', engine='openpyxl', skiprows=4, sheet_name='Table A').drop(columns='Unnamed: 0')
-    gfi_table_a_long = pd.melt(gfi_table_a, id_vars=['Unnamed: 1'], var_name='year', value_name='value').rename(columns={"Unnamed: 1": 'country'})
-    gfi_table_a_long = add_indicator_cols(gfi_table_a_long, "Table A", "The Sums of the Value Gaps Identified in Trade Between 134 Developing Countries  and 36 Advanced Economies, 2009-2018, in USD Millions")
-
-    gfi_table_c = pd.read_excel('data/gfi trade mispricing.xlsx', engine='openpyxl', skiprows=4, sheet_name='Table C').drop(columns='Unnamed: 0')
-    gfi_table_c_long = pd.melt(gfi_table_c, id_vars=['Unnamed: 1'], var_name='year', value_name='value').rename(columns={"Unnamed: 1": 'country'})
-    gfi_table_c_long = add_indicator_cols(gfi_table_c_long, "Table C", "  The Total Value Gaps Identified Between 134 Developing Countries and 36 Advanced Economies, 2009-2018, as a Percent of Total Trade")
-                                      
-    gfi_table_e = pd.read_excel('data/gfi trade mispricing.xlsx', engine='openpyxl', skiprows=4, sheet_name='Table E').drop(columns='Unnamed: 0')
-    gfi_table_e_long = pd.melt(gfi_table_e, id_vars=['Unnamed: 1'], var_name='year', value_name='value').rename(columns={"Unnamed: 1": 'country'})
-    gfi_table_e_long = add_indicator_cols(gfi_table_e_long, "Table E", "  The Sums of the Value Gaps Identified in Trade Between 134 Developing Countries  and all of their Global Trading Partners, 2009-2018 in USD Millions")
-                                          
-    gfi_table_g = pd.read_excel('data/gfi trade mispricing.xlsx', engine='openpyxl', skiprows=4, sheet_name='Table G').drop(columns='Unnamed: 0')
-    gfi_table_g_long = pd.melt(gfi_table_g, id_vars=['Unnamed: 1'], var_name='year', value_name='value').rename(columns={"Unnamed: 1": 'country'})
-    gfi_table_g_long = add_indicator_cols(gfi_table_g_long, "Table G", "  The Total Value Gaps Identified in Trade Between 134 Developing Countries and all of their Trading Partners, 2009-2018 as a Percent of Total Trade")
-                                          
-    indicator4_4_2_1 = pd.concat([gfi_table_a_long, gfi_table_c_long, gfi_table_e_long, gfi_table_g_long])
+# Read in the data from the GFI sheets
+def process_gfi_table(sheet_name, indicator_code, indicator_description):
+    # Read data from the GFI sheet
+    gfi_table = pd.read_excel('data/gfi trade mispricing.xlsx', engine='openpyxl', skiprows=4, sheet_name=sheet_name).drop(columns='Unnamed: 0')
     
-    return indicator4_4_2_1
+    # Rename the country column
+    gfi_table = gfi_table.rename(columns={"Unnamed: 1": "country"})
+    
+    # Filter for African countries
+    iso3_reference_df = pd.read_csv('data/iso3_country_reference.csv')
+    africa_iso3_df = iso3_reference_df[iso3_reference_df['Region Name'] == 'Africa']
+    
+    # Filter the table for African countries
+    gfi_table = gfi_table[gfi_table['country'].isin(africa_iso3_df['Country or Area'])]
+    
+    # Melt the data from wide format to long format
+    gfi_table_long = pd.melt(gfi_table, id_vars=['country'], var_name='year', value_name='value')
+    
+    # Add indicator code and description
+    gfi_table_long = add_indicator_cols(gfi_table_long, indicator_code, indicator_description)
+    
+    return gfi_table_long
 
+# Process data for different tables
+gfi_table_a_long = process_gfi_table('Table A', "Table A", "The Sums of the Value Gaps Identified in Trade Between 134 Developing Countries and 36 Advanced Economies, 2009-2018, in USD Millions")
+gfi_table_c_long = process_gfi_table('Table C', "Table C", "The Total Value Gaps Identified Between 134 Developing Countries and 36 Advanced Economies, 2009-2018, as a Percent of Total Trade")
+gfi_table_e_long = process_gfi_table('Table E', "Table E", "The Sums of the Value Gaps Identified in Trade Between 134 Developing Countries and all of their Global Trading Partners, 2009-2018 in USD Millions")
+gfi_table_g_long = process_gfi_table('Table G', "Table G", "The Total Value Gaps Identified in Trade Between 134 Developing Countries and all of their Trading Partners, 2009-2018 as a Percent of Total Trade")
 
+# Concatenate the data from all tables
+indicator4_4_2_1 = pd.concat([gfi_table_a_long, gfi_table_c_long, gfi_table_e_long, gfi_table_g_long])
+
+# Output the resulting DataFrame
+indicator4_4_2_1.to_csv('outputs/indicator_4_4_2_1.csv', index=False)
+
+#IMF ISORA
 # indicator 4.4.2.2
-def get_4_4_2_2():
+# Define the function to get the indicator
+def get_4_4_2_2(output_dir='outputs'):
     imf_isora_df_1 = pd.read_excel('data/IMF ISORA.xlsx', engine='openpyxl', skiprows=5, skipfooter=3, sheet_name="Registration of personal income").rename(columns={"Unnamed: 0": 'country'})
     imf_isora_df_1_long = pd.melt(imf_isora_df_1, id_vars='country', var_name='year', value_name='value')
     imf_isora_df_1_long['indicator code'] = imf_isora_df_1_long['year'].apply(
@@ -480,11 +497,23 @@ def get_4_4_2_2():
     })
     imf_isora_df_2_long['year'] = imf_isora_df_2_long['year'].str.replace(r'\.\d+', '', regex=True)
     
+    # Concatenate both dataframes
     indicator4_4_2_2 = pd.concat([imf_isora_df_1_long, imf_isora_df_2_long])
+
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save the resulting DataFrame to CSV in the specified output directory
+    file_path = os.path.join(output_dir, 'indicator_4_4_2_2.csv')
+    indicator4_4_2_2.to_csv(file_path, index=False)
+    print(f"Indicator data saved to '{file_path}'")
 
     return indicator4_4_2_2
 
+# Call the function and save the data
+get_4_4_2_2(output_dir='outputs')
 
+#OSAA
 # indicator 4.4.2.3
 def get_4_4_2_3():
 
