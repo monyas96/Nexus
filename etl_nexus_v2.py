@@ -70,9 +70,9 @@ def etl_process(indicator_label, input_iso3_file, input_pefa_file, output_dir, f
 
 # Example usage of the function:
 indicators = [
-    ('PEFA: PI-1 Aggregate expenditure out-turn', 'indicator_4_1_1_1.csv'),
-    ('PEFA: PI-3 Revenue outturn', 'indicator_4_1_1_2.csv'),
-    ('PEFA: PI-2 Expenditure composition outturn', 'indicator_4_1_1_3.csv')
+    ('PEFA: PI-1 Aggregate expenditure out-turn', 'indicator_4_1_1_1_WB_PEFA.csv'),
+    ('PEFA: PI-3 Revenue outturn', 'indicator_4_1_1_2_WB_PEFA.csv'),
+    ('PEFA: PI-2 Expenditure composition outturn', 'indicator_4_1_1_3_WB_PEFA.csv')
 ]  # PEFA indicator labels and their corresponding output file names
 input_iso3_file = 'data/iso3_country_reference.csv'  # Path to the ISO3 reference file
 input_pefa_file = 'data/WB-PEFA.xlsx'  # Path to the PEFA data Excel file
@@ -113,12 +113,12 @@ long_df['IndicatorID'] = 'GC.TAX.TOTL.GD.ZS'
 output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
-long_df.to_csv(os.path.join(output_dir, 'indicator_4_2_1_1.csv'), index=False)
+long_df.to_csv(os.path.join(output_dir, 'indicator_4_2_1_1_WB_WDI.csv'), index=False)
 ########################################################################################
 #ATAF: indicator 4.2.1.2: DONE!
 
 # Load the Excel file
-file_path = 'ATO_RAW_ATAF 2.xlsx'  # This is relative path from my 
+file_path = 'data/ATO_RAW_ATAF 2.xlsx'  # This is relative path from my 
 xls = pd.ExcelFile(file_path, engine='openpyxl')
 
 # Load the first sheet into a DataFrame
@@ -183,7 +183,7 @@ filtered_df = cleaned_df[(cleaned_df['Indicator'].str.contains('Domestic revenue
 print(filtered_df.head())
 
 # Save the filtered DataFrame to a CSV file
-filtered_df.to_csv('outputs/indicator_4_2_1_2.csv', index=False)
+filtered_df.to_csv('outputs/indicator_4_2_1_2_ATAF.csv', index=False)
 ############################################################################################
 # USAID indicator 4.2.2.1a  DONE!
 # Define the function to get the indicator
@@ -195,7 +195,7 @@ indicator_4_2_2_1a = usaid_df[usaid_df['country_id'].notna()][['country_id', 'co
 indicator_4_2_2_1a = indicator_4_2_2_1a.rename(columns={'Tax effort (ratio) [tax_eff]': 'Value'})
 indicator_4_2_2_1a['Indicator'] = 'Tax effort (ratio)'
 indicator_4_2_2_1a = indicator_4_2_2_1a[['country_name', 'year', 'Indicator', 'Value']]
-indicator_4_2_2_1a.to_csv('outputs/indicator_4_2_2_1a.csv', index=False)
+indicator_4_2_2_1a.to_csv('outputs/indicator_4_2_2_1a_USAID.csv', index=False)
 #World Bank Revenue Dashboard
 #4_2_2_1b it has gap cpacity and buoyancy
 file_path = 'data/WB_TAX CPACITY AND GAP.csv'
@@ -226,7 +226,7 @@ def reshape_tax_data(df):
 indicator4_2_2_1b = reshape_tax_data(df)
 
 # Save the reshaped DataFrame to a CSV file
-indicator4_2_2_1b.to_csv('outputs/indicator4_2_2_1b.csv', index=False)
+indicator4_2_2_1b.to_csv('outputs/indicator_4_2_2_1b_WB_TAXCPA&GAP.csv', index=False)
 
 ####################################################################################
 #OSAA
@@ -243,23 +243,16 @@ def get_4_3_1_1(output_dir='outputs'):
     indicator4_3_1_1 = indicator4_3_1_1.reset_index()
     indicator4_3_1_1_long = pd.melt(indicator4_3_1_1, id_vars=['economy'], var_name='year', value_name='value')
     indicator4_3_1_1_long['year'] = indicator4_3_1_1_long['year'].str.extract(r'(\d{4})')
-
-    # Add indicator description and code
     indicator4_3_1_1_long['indicator description'] = 'Market capitalization of listed domestic companies (current US$) divided by GDP (current US$)'
     indicator4_3_1_1_long['indicator code'] = 'CM.MKT.LCAP.CD / NY.GDP.MKTP.CD'
-
-    # Add the 'Indicator label' column
     indicator4_3_1_1_long['Indicator label'] = 'Market capitalization in USD as percentage of GDP'
     indicator4_3_1_1_long = indicator4_3_1_1_long.rename(columns={'economy': 'iso3'})
     indicator4_3_1_1_long = indicator4_3_1_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
-
-    # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
-
-    # Save the resulting DataFrame to CSV
-    file_path = os.path.join(output_dir, 'indicator_4_3_1_1.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_1_OSAA.csv')
     indicator4_3_1_1_long.to_csv(file_path, index=False)
     return indicator4_3_1_1_long
+get_4_3_1_1()
 
 #WB - WDI
 #indicator 4_3_1_2
@@ -279,7 +272,7 @@ def get_4_3_1_2(output_dir='outputs'):
     indicator4_3_1_2_long = indicator4_3_1_2_long.rename(columns={'economy': 'iso3'})
     indicator4_3_1_2_long = indicator4_3_1_2_long[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
     os.makedirs(output_dir, exist_ok=True)
-    file_path = os.path.join(output_dir, 'indicator_4_3_1_2.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_2_WB_WDI.csv')
     indicator4_3_1_2_long.to_csv(file_path, index=False)
     print(f"Indicator data saved to '{file_path}'")
     return indicator4_3_1_2_long
@@ -320,7 +313,7 @@ def get_4_3_1_3(output_dir='outputs'):
     os.makedirs(output_dir, exist_ok=True)
 
     # Save the resulting DataFrame to CSV
-    file_path = os.path.join(output_dir, 'indicator_4_3_1_3.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_3_1_3_OSAA.csv')
     indicator4_3_1_3_long.to_csv(file_path, index=False)
     print(f"Indicator data saved to '{file_path}'")
 
@@ -359,7 +352,7 @@ def get_4_3_2_1(output_dir='outputs'):
     indicator4_3_2_1_long = indicator4_3_2_1_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
 
     os.makedirs(output_dir, exist_ok=True)
-    file_path = os.path.join(output_dir, 'indicator_4_3_2_1.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_3_2_1_OSAA.csv')
     indicator4_3_2_1_long.to_csv(file_path, index=False)
 
     return indicator4_3_2_1_long
@@ -384,7 +377,7 @@ def get_4_3_2_2(output_dir='outputs'):
     indicator4_3_2_2_long = indicator4_3_2_2_long[['iso3', 'year', 'indicator description', 'indicator code', 'Indicator label', 'value']]
 
     os.makedirs(output_dir, exist_ok=True)
-    file_path = os.path.join(output_dir, 'indicator_4_3_2_2.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_3_2_2_WB_WDI.csv')
     indicator4_3_2_2_long.to_csv(file_path, index=False)
 
     return indicator4_3_2_2_long
@@ -418,7 +411,6 @@ def get_4_4_2_1():
 #GFI 
 #indicator4_4_2_1
 
-  
 def add_indicator_cols(df, code, description):
     df['indicator_code'] = code
     df['indicator_description'] = description
@@ -457,7 +449,7 @@ gfi_table_g_long = process_gfi_table('Table G', "Table G", "The Total Value Gaps
 indicator4_4_2_1 = pd.concat([gfi_table_a_long, gfi_table_c_long, gfi_table_e_long, gfi_table_g_long])
 
 # Output the resulting DataFrame
-indicator4_4_2_1.to_csv('outputs/indicator_4_4_2_1.csv', index=False)
+indicator4_4_2_1.to_csv('outputs/indicator_4_4_2_1_GFI.csv', index=False)
 
 #IMF ISORA
 # indicator 4.4.2.2
@@ -504,7 +496,7 @@ def get_4_4_2_2(output_dir='outputs'):
     os.makedirs(output_dir, exist_ok=True)
 
     # Save the resulting DataFrame to CSV in the specified output directory
-    file_path = os.path.join(output_dir, 'indicator_4_4_2_2.csv')
+    file_path = os.path.join(output_dir, 'indicator_4_4_2_2_ISORA.csv')
     indicator4_4_2_2.to_csv(file_path, index=False)
     print(f"Indicator data saved to '{file_path}'")
 
@@ -517,7 +509,7 @@ get_4_4_2_2(output_dir='outputs')
 # indicator 4.4.2.3
 def get_4_4_2_3():
 
-    # get druge prices and seizures data
+    # get drug prices and seizures data
     drug_prices_df = pd.read_excel('data/unodc drug prices.xlsx', skiprows=1, engine='openpyxl', sheet_name='Prices in USD')
     drug_seizures_df = pd.read_excel('data/unodc drug seizures.xlsx', skiprows=1, engine='openpyxl', sheet_name='Export')
 
@@ -542,15 +534,22 @@ def get_4_4_2_3():
     indicator4_4_2_3['iso3'] = indicator4_4_2_3['Country'].apply(lambda x: wb.economy.coder(x) if pd.notnull(x) else None)
 
     indicator4_4_2_3 = indicator4_4_2_3.drop(columns='Country').rename(columns={'Total_Sale': 'value'})
-    indicator4_4_2_3['indicator description'] = 'The amount of drugs seized in kilograms multiplied by the drug price in kilograms. Exlcludes all siezures not measured in grams or kilograms.'
-    indicator4_4_2_3['indicatore code'] = 'Monetary losses (in USD) to drug sales'
+    indicator4_4_2_3['indicator description'] = 'The amount of drugs seized in kilograms multiplied by the drug price in kilograms. Excludes all seizures not measured in grams or kilograms.'
+    indicator4_4_2_3['indicator code'] = 'Monetary losses (in USD) to drug sales'
 
+    os.makedirs('outputs', exist_ok=True)
+    indicator4_4_2_3.to_csv('outputs/4.4.2.3_OSAA.csv', index=False)
+    print("Saved to outputs/4.4.2.3_OSAA.csv")
     return indicator4_4_2_3
+   get_4_4_2_3()
 
-
+#OSAA
 # indicator 4.4.2.4 
 def get_4_4_2_4():
-    wb_corruption_score = wb.data.DataFrame('CC.EST', wb.region.members('AFR'), db=3).reset_index().melt(id_vars=['economy'], var_name='year', value_name='wb corruption score').rename(columns={'economy': 'iso3'})
+
+    wb_corruption_score = wb.data.DataFrame('CC.EST', wb.region.members('AFR'), db=3).reset_index().melt(
+        id_vars=['economy'], var_name='year', value_name='wb corruption score'
+    ).rename(columns={'economy': 'iso3'})
     wb_corruption_score['year'] = wb_corruption_score['year'].str.replace('YR', '')
     wb_corruption_score['wb normalized corruption score'] = wb_corruption_score.groupby('year')['wb corruption score'].transform(
         lambda x: (x - x.min()) / (x.max() - x.min())
@@ -563,68 +562,160 @@ def get_4_4_2_4():
 
     wb_corruption_score['wb corruption score country share'] = (wb_corruption_score['wb corruption score weight'] / wb_corruption_score['wb corruption score total weight']) * 148
 
-    wjp_absence_of_corruption = pd.read_excel('data/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country Code', 'Year', 'Factor 2: Absence of Corruption']].rename(columns={'Country Code': 'iso3', 'Year': 'year'})
+    # Save WDI-calculated corruption score
+    wb_corruption_score_export = wb_corruption_score[['iso3', 'year', 'wb corruption score country share']].rename(
+        columns={'wb corruption score country share': 'value'}
+    )
+    wb_corruption_score_export['indicator description'] = 'WDI-calculated corruption score share of 148'
+    wb_corruption_score_export['indicator code'] = 'CC.EST calculated'
+    os.makedirs('outputs', exist_ok=True)
+    wb_corruption_score_export.to_csv('outputs/4.4.2.4_OSAA.csv', index=False)
+    print("Saved WDI corruption score to outputs/4.4.2.4_OSAA.csv")
+
+    # --- WJP Component ---
+    wjp_absence_of_corruption = pd.read_excel('data/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[
+        ['Country Code', 'Year', 'Factor 2: Absence of Corruption']
+    ].rename(columns={'Country Code': 'iso3', 'Year': 'year'})
     wjp_absence_of_corruption['year'] = wjp_absence_of_corruption['year'].astype(str)
 
     def expand_years(row):
         if '-' in row['year']:
             start, end = map(int, row['year'].split('-'))
-            return [{'iso3': row['iso3'], 'year': year, 'Factor 2: Absence of Corruption': row['Factor 2: Absence of Corruption']}
+            return [{'iso3': row['iso3'], 'year': str(year), 'Factor 2: Absence of Corruption': row['Factor 2: Absence of Corruption']}
                     for year in range(start, end + 1)]
         else:
             return [row]
-        
-    wjp_absence_of_corruption_expanded = pd.DataFrame([entry for row in wjp_absence_of_corruption.to_dict(orient='records') for entry in expand_years(row)])
 
-    """ 
-        TODO: add afrobarometer data and calculate indicator 4.4.2.4
-        Afrobarometer data is stored as .sav files right now, and I cant figure out how to convert them to csv.
-        Theres a command line tool and an online tool but neither have worked for me.
-    """
+    wjp_expanded = pd.DataFrame([entry for row in wjp_absence_of_corruption.to_dict(orient='records') for entry in expand_years(row)])
 
-    indicator4_4_2_4 = pd.merge(wb_corruption_score, wjp_absence_of_corruption_expanded, on=['iso3', 'year'], how='left')
-    indicator4_4_2_4 = pd.melt(indicator4_4_2_4, id_vars=['iso3', 'year'], var_name='indicator description', value_name='value')
+    # Save WJP Absence of Corruption
+    wjp_export = wjp_expanded.rename(columns={'Factor 2: Absence of Corruption': 'value'})
+    wjp_export['indicator description'] = 'WJP Factor 2: Absence of Corruption'
+    wjp_export['indicator code'] = 'WJP_F2'
+    wjp_export = wjp_export[['iso3', 'year', 'indicator description', 'indicator code', 'value']]
+    wjp_export.to_csv('outputs/4.4.2.4_wb_WJP.csv', index=False)
+    print("Saved WJP data to outputs/4.4.2.4_WB_WJP.csv")
 
-    return indicator4_4_2_4
-
-
+get_4_4_2_4()
 ######################################################################################
-# indicator 4.4.3.1 has several indicators
+#wjp #WDI #MOIbrahim #World Bank ID4D
+#WPJ _4_4_3_1b
 def get_4_4_3_1b():
-    wjp_rule_of_law = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'WJP Rule of Law Index: Overall Score']]
+    df = pd.read_excel('data/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')
+    df = df[['Country', 'Year', 'WJP Rule of Law Index: Overall Score']].rename(columns={
+        'Country': 'economy',
+        'Year': 'year',
+        'WJP Rule of Law Index: Overall Score': 'value'
+    })
+    df['indicator description'] = 'WJP Rule of Law Index: Overall Score'
+    df['indicator code'] = 'WJP Rule of Law Index'
+    df = df[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df.to_csv('outputs/4.4.3.1b_WB_WJP.csv', index=False)
+    print("Saved: 4.4.3.1b_WB_WJP.csv")
 get_4_4_3_1b()
-# Function to get and save Rule of Law & Justice indicator - Mo Ibrahim
+#Mo Ibraham
+# indicator 4.4.3.1c
 def get_4_4_3_1c():
-   def get_4_4_3_1c():
-    rule_of_law_justice = pd.read_csv('mo ibrahim rule of law - score and rank.csv')[['Country', 'Year', 'Rule of Law & Justice (score and rank)']]
+    df = pd.read_csv('data/mo ibrahim rule of law - score and rank.csv')
+    df_long = pd.melt(df, id_vars=['Location', 'iso2', 'Indicator'], var_name='year', value_name='value')
+    df_long = df_long.rename(columns={'Location': 'economy','Indicator': 'indicator description'})
+    df_long['indicator code'] = 'Mo Ibrahim Index'
+    df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df_long.to_csv('outputs/4.4.3.1c_MoIbrahim.csv', index=False)
+    print("Saved to outputs/4.4.3.1c_MoIbrahim.csv")
 get_4_4_3_1c()
-# Function to get and save Reduce Corruption indicator - World Bank CPIA
+#WDI
+# indicator 4.4.3.1d
 def get_4_4_3_1d():
-    cpia_reduce_corruption = wb.data.DataFrame('IQ.CPA.PUBS.XQ', wb.region.members('AFR'), db=31)
-    cpia_reduce_corruption.to_csv('4.4.3.1d_Reduce_Corruption.csv', index=False)
+    df = wb.data.DataFrame('IQ.CPA.PUBS.XQ', wb.region.members('AFR'), db=31).reset_index()
+    df_long = pd.melt(df, id_vars=['economy'], var_name='year', value_name='value')
+    df_long['year'] = df_long['year'].str.replace('YR', '')
+    df_long['indicator description'] = 'CPIA transparency, accountability, and corruption in the public sector rating'
+    df_long['indicator code'] = 'IQ.CPA.PUBS.XQ'
+    df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df_long.to_csv('outputs/4.4.3.1d_WB_WDI_CPIA1.csv', index=False)
+    print("Saved to outputs/4.4.3.1d_WB_WDI_CPIA1.csv")
 get_4_4_3_1d()
-# Function to get and save Sound Institutions indicator - World Bank CPIA
+#WDI 
+# indicator 4.4.3.1e
 def get_4_4_3_1e():
-    cpia_sound_institutions = wb.data.DataFrame('IQ.CPA.TRAN.XQ', wb.region.members('AFR'), db=31)
-    cpia_sound_institutions.to_csv('4.4.3.1e_Sound_Institutions.csv', index=False)
+    df = wb.data.DataFrame('IQ.CPA.PADM.XQ', wb.region.members('AFR'), db=31).reset_index()
+    df_long = pd.melt(df, id_vars=['economy'], var_name='year', value_name='value')
+    df_long['year'] = df_long['year'].str.replace('YR', '')
+    df_long['indicator description'] = 'Indicator Name	CPIA quality of public administration rating'
+    df_long['indicator code'] = 'IQ.CPA.PADM.XQ'
+    df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df_long.to_csv('outputs/4.4.3.1e_WB_WDI_CPIA2.csv', index=False)
+    print("Saved to outputs/4.4.3.1e_WB_WDI_CPIA2.csv")
+get_4_4_3_1e()
+#ID4D (Two indicators)
+def get_4_4_3_1fa():
+    try:
+        df = wb.data.DataFrame('FX.OWN.TOTL.YG.ZS', wb.region.members('AFR')).reset_index()
+        df_long = pd.melt(df, id_vars=['economy'], var_name='year', value_name='value')
+        df_long['year'] = df_long['year'].str.replace('YR', '')
+        df_long['indicator description'] = 'ID ownership, 15 to 24 years old (%)'
+        df_long['indicator code'] = 'FX.OWN.TOTL.YG.ZS'
+        df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+        os.makedirs('outputs', exist_ok=True)
+        df_long.to_csv('outputs/4.4.3.1f_WB_WDI_ID4D1.csv', index=False)
+        print("Saved to outputs/4.4.3.1f_WB_WDI_ID4D1.csv")
+    except Exception as e:
+        print(f"Failed to fetch youth ID ownership data: {e}")
 
-# Function to get and save Identity Documentation indicator - World Bank ID4D
-def get_4_4_3_1f():
-    id4d_identity_documentation = wb.data.DataFrame('SP.REG.BRTH.ZS', wb.region.members('AFR'), db=89)
-    id4d_identity_documentation.to_csv('4.4.3.1f_Identity_Documentation.csv', index=False)
-get_4_4_3_1f()
-# Function to get and save Public Access to Information indicator - World Justice Project
+def get_4_4_3_1fb():
+    try:
+        df = wb.data.DataFrame('FX.OWN.TOTL.OL.ZS', wb.region.members('AFR')).reset_index()
+        df_long = pd.melt(df, id_vars=['economy'], var_name='year', value_name='value')
+        df_long['indicator description'] = 'ID ownership, 25 and older (%)'
+        df_long['indicator code'] = 'FX.OWN.TOTL.OL.ZS'
+        df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+        os.makedirs('outputs', exist_ok=True)
+        df_long.to_csv('outputs/4.4.3.1f_WB_WDI_ID4D2.csv', index=False)
+        print("Saved to outputs/4.4.3.1f_WB_WDI_ID4D2.csv")
+    except Exception as e:
+        print(f"Failed to fetch adult ID ownership data: {e}")
+
+get_4_4_3_1fa()
+get_4_4_3_1fb()
+
+#WJP
+# indicator 4.4.3.1g
+# indicator 4.4.3.1h
 def get_4_4_3_1g():
-    public_access_information = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 3: Open Government']]
-    public_access_information.to_csv('4.4.3.1g_Public_Access_to_Information.csv', index=False)
-get_4_4_3_1g()
-# Function to get and save Institutions to Combat Crime indicator - World Justice Project
+    df = pd.read_excel('data/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')
+    df = df[['Country', 'Year', 'Factor 3: Open Government']].copy()
+    df = df.rename(columns={
+        'Country': 'economy',
+        'Factor 3: Open Government': 'value',
+        'Year': 'year'
+    })
+    df['indicator description'] = 'Public Access to Information'
+    df['indicator code'] = 'Factor 3: Open Government'
+    df = df[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df.to_csv('outputs/4.4.3.1g_WJP.csv', index=False)
+    print("Saved to outputs/4.4.3.1g_WJP.csv")
+
 def get_4_4_3_1h():
-    institutions_combat_crime = pd.read_excel('wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']]
-    institutions_combat_crime.to_csv('4.4.3.1h_Institutions_to_Combat_Crime.csv', index=False)
+    df = pd.read_excel('data/wjp rule of law.xlsx', engine='openpyxl', sheet_name='Historical Data')
+    df = df[['Country', 'Year', 'Factor 5: Order and Security', 'Factor 7: Civil Justice', 'Factor 8: Criminal Justice']].copy()
+    df = df.rename(columns={'Country': 'economy', 'Year': 'year'})
+    df_long = pd.melt(df, id_vars=['economy', 'year'], var_name='indicator code', value_name='value')
+    df_long['indicator description'] = 'Institutions to Combat Crime'
+    df_long = df_long[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df_long.to_csv('outputs/4.4.3.1h_WJP.csv', index=False)
+    print("Saved to outputs/4.4.3.1h_WJP.csv")
+
+get_4_4_3_1g()
 get_4_4_3_1h()
 
-
+#IMF ISORA
 # indicator 4.4.3.2
 def get_4_4_3_2():
 
@@ -876,32 +967,43 @@ def get_4_4_3_2():
     imf_isora_op_metrics_audit_df = pd.concat([imf_isora_op_metrics_audit_df_1_long, imf_isora_op_metrics_audit_df_2_long, imf_isora_op_metrics_audit_df_3_long, imf_isora_op_metrics_audit_df_4_long, imf_isora_op_metrics_audit_df_5_long])
 
     indicator4_4_3_2 = pd.concat([imf_isora_resources_ict_df, imf_isora_staff_metrics_df, imf_isora_op_metrics_audit_df])
+
+    os.makedirs('outputs', exist_ok=True)
+    indicator4_4_3_2.to_csv('outputs/4.4.3.2_IMF_ISORA.csv', index=False)
+    print("Saved to outputs/4.4.3.2_IMF_ISORA.csv")
     return indicator4_4_3_2
+get_4_4_3_2()
 
 
 # indicator 4.4.4.2
 def get_4_4_4_2():
-
     tjn_df = pd.read_csv('data/tjn data.csv').rename(columns={'country_name': 'Country'})
     tjn_df_long = pd.melt(tjn_df, id_vars=['Country', 'iso3'], var_name='year', value_name='value')
     tjn_df_long['year'] = tjn_df_long['year'].str.extract(r'(\d{4})')
     tjn_df_long['indicator code'] = 'FSI'
     tjn_df_long['indicator description'] = 'Financial Secrecy Index'
-
+    os.makedirs('outputs', exist_ok=True)
+    tjn_df_long.to_csv('outputs/4.4.4.2_TJN.csv', index=False)
+    print("Saved to outputs/4.4.4.2_TJN.csv")
     return tjn_df_long
+get_4_4_4_2()
 
-
+#USAID
 # indicator 4.4.5.1 
-def get_4_4_5_1():
-
-    # read in data and extract indicators
+def get_4_4_5_1():   
     usaid_df = pd.read_excel('data/USAID tax effort and buyancy.xlsx', engine='openpyxl', sheet_name='Data')
-    indicator4_4_5_1 = usaid_df[['country_name', 'country_id', 'year', 'Tax buoyancy [by_tax]']].rename(columns={"country_name": 'country', 'country_id': 'm49', 'Tax buoyancy [by_tax]': 'value'})
-    indicator4_4_5_1['indicator code'] = "Tax buoyancy [by_tax]"
-    indicator4_4_5_1['indicator description'] = "Tax buoyancy [by_tax]"
-
-    return indicator4_4_5_1
-
+    df = usaid_df[['country_name', 'year', 'Tax buoyancy [by_tax]']].rename(columns={
+        'country_name': 'economy',
+        'Tax buoyancy [by_tax]': 'value'
+    })
+    df['indicator code'] = 'Tax buoyancy [by_tax]'
+    df['indicator description'] = 'Tax buoyancy [by_tax]'
+    df = df[['economy', 'year', 'value', 'indicator description', 'indicator code']]
+    os.makedirs('outputs', exist_ok=True)
+    df.to_csv('outputs/4.4.5.1_USAID.csv', index=False)
+    print("Saved to outputs/4.4.5.1_USAID.csv")
+    return df
+get_4_4_5_1()
 
 # indicator 4.4.5.2
 def get_4_4_5_2():
@@ -919,30 +1021,3 @@ def get_4_4_5_2():
 """ NEED TO REGISTER WITH GOLD MINING DATABASE - WE DON'T NEED TO WORRY ABOUT THIS ONE FOR NOW """
 
 
-if __name__ == '__main__':
-
-    # df_4_3_1_1 = get_4_3_1_1().to_csv("indicator_data_files/indicator 4.3.1.1.csv")
-
-    # df_4_3_1_2 = get_4_3_1_2().to_csv("indicator_data_files/indicator 4.3.1.2.csv")
-
-    # df_4_3_1_3 = get_4_3_1_3().to_csv("indicator_data_files/indicator 4.3.1.3.csv")
-
-    # df_4_3_2_1 = get_4_3_2_1().to_csv("indicator_data_files/indicator 4.3.2.1.csv")
-
-    # df_4_3_2_2 = get_4_3_2_2().to_csv("indicator_data_files/indicator 4.3.2.2.csv")
-
-    # df_4_4_2_1 = get_4_4_2_1().to_csv("indicator_data_files/indicator 4.4.2.1.csv")
-
-    # df_4_4_2_2 = get_4_4_2_2().to_csv("indicator_data_files/indicator 4.4.2.2.csv")
-
-    # df_4_4_2_3 = get_4_4_2_3().to_csv("indicator_data_files/indicator 4.4.2.3.csv")
-
-    # df_4_4_2_4 = get_4_4_2_4().to_csv("indicator_data_files/indicator 4.4.2.4.csv")
-
-    # df_4_4_3_2 = get_4_4_3_2().to_csv("indicator_data_files/indicator 4.4.3.2.csv")
-
-    # df_4_4_4_2 = get_4_4_4_2().to_csv("indicator_data_files/indicator 4.4.4.2.csv")
-
-    # df_4_4_5_1 = get_4_4_5_1().to_csv("indicator_data_files/indicator 4.4.5.1.csv")
-
-    exit()
