@@ -4,7 +4,9 @@ import re
 import openpyxl
 import xlrd
 
-#WB-PEFA  4.2.1.2: DONE!
+#WB-PEFA 
+#4.1.1.1
+#4.1.1.2
 
 # Input: Load the ISO3 country reference list to filter African countries
 def load_iso3_country_reference(file_path):
@@ -82,7 +84,7 @@ output_dir = 'outputs'  # Directory to save the output CSV files
 for indicator_label, file_name in indicators:
     etl_process(indicator_label, input_iso3_file, input_pefa_file, output_dir, file_name)
 
-# Example usage of the function:
+# usage of the function:
 indicators = [
     ('WB.PEFA.PI-2016-03', 'PEFA: PI-3 Revenue outturn'),
     ('WB.PEFA.PI-2016-01', 'PEFA: PI-1 Aggregate expenditure out-turn'),
@@ -514,7 +516,7 @@ def get_4_4_2_3():
     drug_seizures_df = pd.read_excel('data/unodc drug seizures.xlsx', skiprows=1, engine='openpyxl', sheet_name='Export')
 
     # filter drug prices data and convert units
-    filtered_prices_df = drug_prices_df[drug_prices_df['Unit'].isin(['Grams', 'Kilograms'])].copy()
+    filtered_prices_df = drug_prices_df[drug_prices_df['Unit'].isin(['Grams', 'Kilograms'])].copy() #Think of adding units and tablets
     filtered_prices_df.loc[filtered_prices_df['Unit'] == 'Grams', 'Typical_USD'] *= 1000
 
     # merge drug prices and seizures
@@ -1005,19 +1007,6 @@ def get_4_4_5_1():
     return df
 get_4_4_5_1()
 
-# indicator 4.4.5.2
-def get_4_4_5_2():
 
-    # get tax justice network data
-    df_unilateralCross_url = "https://data.taxjustice.net/api/data/download?dataset=unilateral_cross&keys=country_name%2Ciso3&variables=fsi_2011_value%2Cfsi_2013_value%2Cfsi_2015_value%2Cfsi_2018_value%2Cfsi_2020_value%2Cfsi_2022_value%2Cfsi_2011_gsw%2Cfsi_2013_gsw%2Cfsi_2015_gsw%2Cfsi_2018_gsw%2Cfsi_2020_gsw%2Cfsi_2022_gsw%2Cfsi_2011_rank%2Cfsi_2013_rank%2Cfsi_2015_rank%2Cfsi_2018_rank%2Cfsi_2020_rank%2Cfsi_2022_rank%2Cfsi_2011_score%2Cfsi_2013_score%2Cfsi_2015_score%2Cfsi_2018_score%2Cfsi_2020_score%2Cfsi_2022_score&format=csv&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ4OTQsInR5cGUiOiJkb3dubG9hZCIsImlhdCI6MTcyNjY5MDE2MSwiZXhwIjoxNzI2NjkxOTYxfQ.Hf8ycDkeciGz6WxNhWXriuFMBL5GZnp52lpeNPFg8Q0"
-    df_unilateralCross = pd.read_csv(df_unilateralCross_url)
-
-    # TODO: figure out why Pandas cant parse df
-
-    return df_unilateralCross
-
-
-# TODO: indicator 4.4.6.1 
-""" NEED TO REGISTER WITH GOLD MINING DATABASE - WE DON'T NEED TO WORRY ABOUT THIS ONE FOR NOW """
 
 
