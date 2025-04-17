@@ -1,0 +1,350 @@
+body.jbSurvey.sabre {
+    background: none
+}
+.jbSurvey.sabre header#header {
+    background: url("https://book.jetblue.com/B6/static/images/layout-webrefresh/bg-jetblue-body.jpg?b=dev") no-repeat center top #fff
+}
+.jbSurvey .surveyModuleContainer {
+    background: #fff
+}
+.jbSurvey .surveyModuleContainer .contentSizeProxy {
+    -webkit-transition: height .2s;
+    -moz-transition: height .2s;
+    -o-transition: height .2s;
+    transition: height .2s
+}
+.jbSurvey .surveyModuleContainer .surveyModalContainer {
+    width: 100%;
+    max-height: 0;
+    margin-top: -1px;
+    border-bottom: 1px solid #4d90cd;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    overflow: hidden;
+    -webkit-transition: max-height .2s;
+    -moz-transition: max-height .2s;
+    -o-transition: max-height .2s;
+    transition: max-height .2s;
+    /*font-family: Arial, Helvetica, sans-serif;*/
+}
+.jbSurvey .surveyModuleContainer.lifeCycleState .contentSizeProxy {
+    -webkit-transition: height .4s;
+    -moz-transition: height .4s;
+    -o-transition: height .4s;
+    transition: height .4s
+}
+.jbSurvey .surveyModuleContainer.lifeCycleState .surveyModalContainer {
+    -webkit-transition: max-height .4s;
+    -moz-transition: max-height .4s;
+    -o-transition: max-height .4s;
+    transition: max-height .4s
+}
+.jbSurvey .surveyModuleContainer.fadeOut .surveyModal {
+    opacity: 0
+}
+.jbSurvey .surveyModalDiv {
+    background-color: white
+}
+.jbSurvey .surveyModalDiv #submitDiv {
+    height: 55px
+}
+.jbSurvey .surveyModalDiv #submitDiv input {
+    margin: 10px 0px !important;
+    float: left;
+}
+.jbSurvey .surveyModalDiv #submitDiv input[type=submit] {
+    border: 0;
+    margin-top: 10px;
+    background: #f90;
+    border-radius: 5px;
+    color: #fff;
+    /*font-family: Arial,Helvetica,sans-serif;*/
+
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 15px;
+    vertical-align: baseline;
+    -webkit-appearance: none;
+    min-width: 67px;
+    min-height: 35px;
+    padding: 5px;
+}
+.jbSurvey .surveyModalDiv #submitDiv input[type=submit].Close {
+    background: #4d90cd
+}
+.jbSurvey .surveyModalDiv #submitDiv input[type=submit].Close:hover {
+    background: #004990
+}
+.jbSurvey .surveyModal {
+    width: 968px;
+    min-width: 968px;
+    min-height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    background: white;
+    font-size: 15px;
+    -webkit-transition: opacity .2s;
+    -moz-transition: opacity .2s;
+    -o-transition: opacity .2s;
+    transition: opacity .2s;
+    font-family: din-web-jetblue, Arial, Helvetica, sans-serif;
+}
+.jbSurvey .surveyClose {
+    width: 35px;
+    height: 35px;
+    margin-top: 10px;
+    margin-left: 20px;
+    float: left;
+    background: url("//www.jetblue.com/img/abtests/survey/close.png") 0 0 no-repeat;
+    cursor: pointer
+}
+.jbSurvey .optionsDiv.text {
+    padding-top: 45px;
+    height: 70px
+}
+.jbSurvey .optionsDiv.text textarea {
+    height: 55px;
+    resize: none
+}
+.jbSurvey .optionsDiv input[type="radio"] {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    margin: -1px;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    top: 2px;
+}
+.jbSurvey .optionsDiv input[type="radio"]+label.fir {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ccc
+}
+.jbSurvey .optionsDiv input[type="radio"]:checked+label.fir {
+    background: #306FAA;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px orange;
+}
+.jbSurvey .optionsDiv label.choiceValue {
+    padding-left: 10px
+}
+.jbSurvey .quesDiv {
+    width: 100%;
+    padding: 15px 0;
+    float: left;
+    font-weight: bold
+}
+.jbSurvey .ansDiv {
+    width: 85%;
+    padding-bottom: 5px;
+    position: relative;
+}
+.jbSurvey .surveyInput {
+    width: 97%;
+    height: 82px;
+    resize: none
+}
+.jbSurvey .optionsDiv span.multiText,
+.jbSurvey .optionsDiv label.numberRangeText {
+    padding-left: 10px;
+    display: inline-block;
+    width: 455px;
+}
+.jbSurvey .optionsDiv input.multiTextInput,
+.jbSurvey .optionsDiv input.numberRangeInput,
+.jbSurvey .optionsDiv input.totalValue {
+    width: 50px;
+    text-align: right;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.jbSurvey .surveyModalDiv #submitDiv input[type=submit].disabled {
+    background-color: #999;
+    cursor: default;
+}
+.jbSurvey .ansDiv.totalValue {
+    width: 520px;
+    border-top: 1px solid #4d9dcd;
+    padding-top: 10px;
+    margin-top: 5px;
+    height: 23px;
+}
+.totalValue span.multiText {
+    text-align: right;
+    right: 5px;
+    float: left;
+    position: relative;
+    font-weight: bold;
+    padding-top: 5px;
+}
+.noteContainer {
+    padding-top: 15px;
+    padding-left: 95px;
+    color: #999;
+    font-weight: bold;
+}
+.jbSurvey .optionsDiv input.multiTextInput.alertBorder,
+.jbSurvey .optionsDiv input.numberRangeInput.alertBorder {
+    border: 2px solid red;
+}
+.jbSurvey .optionsDiv input.totalValue.enabled {
+    background: #ff9900;
+    border: 2px solid orange;
+    color: #004990;
+    font-weight: bold;
+    font-size: 15px;
+}
+.noteContainer.enabled {
+    color: #ff9900;
+}
+.jbSurvey .ansDiv #textareaCounter {
+    padding: 10px 18px 0px 0px;
+    text-align: right;
+}
+.ansDiv .textInputLabel {
+    padding-left: 2px;
+    color: #999;
+}
+.ansDiv .textInputLabel input.textInput {
+    padding: 0px 3px;
+    width: 165px;
+}
+.jbSurvey .ansDiv .textInputLabel span#textareaCounter {
+    padding-left: 5px
+}
+.btn-minimize {
+    border: 1px solid #4d90cd;
+    border-top-color: #fff;
+    border-radius: 0px 0px 3px 3px;
+    background: #fff;
+    padding: 5px;
+    margin-left: 72%;
+    margin-top: -1px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #306FAA;
+    font-weight: 700;
+    display: inline-block;
+}
+.btn-minimize:hover {
+    color: #004990;
+}
+.btn-minimize span {
+    font-size: 25px;
+    line-height: 0px;
+    float: right;
+    padding-top: 5px;
+    font-weight: normal;
+    padding-left: 5px;
+}
+.min-block {
+    width: 71%;
+    position: fixed;
+    z-index: 1001;
+}
+.min-div {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 820px;
+    font-family: din-web-jetblue, Arial, Helvetica, sans-serif;
+}
+#submitDiv a.later {
+    margin: 10px !important;
+    line-height: 57px;
+    /*font-family: Arial,Helvetica,sans-serif;*/
+
+    font-weight: 500;
+    cursor: pointer;
+}
+.jbSurvey .optionsDiv input[type="radio"]+label+label.choiceValue {
+    text-decoration: none;
+}
+.jbSurvey .optionsDiv input[type="radio"]:checked.focusIn+label+label.choiceValue {
+    text-decoration: underline;
+}
+.jbSurvey .surveyModalDiv #submitDiv input[type=submit]:hover {
+    background-color: #ff7300;
+    text-decoration: none;
+}
+.jbSurvey .quesDiv:focus,
+#submitDiv a.later:focus,
+#minMax a:focus,
+#surveyErrDisplay:focus {
+    outline: 0px !important;
+}
+#surveyErrDisplay {
+    padding: 10px 0px;
+    color: #d50f0f;
+    font-size: 1em;
+    display: none;
+}
+#surveyErrDisplay.showDiv {
+    display: block;
+}
+.jbSurvey .optionsDiv div.remPoints {
+    width: 20px;
+    float: right;
+    text-align: right;
+    background: #bbb;
+    border: 1px solid #999;
+    font-size: 15px;
+    padding: 4px 2px 0px 28px;
+}
+.jbSurvey .optionsDiv div.remPoints.enabled {
+    background: #ff9900;
+    border: 2px solid #ff9900;
+    color: #004990;
+    font-weight: bold;
+}
+
+/*********** Start checkbox ***********/
+
+.jbSurvey .optionsDiv input[type="checkbox"] {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    margin: -1px;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    top: 2px;
+}
+
+.jbSurvey .optionsDiv input[type="checkbox"]+label.checkmark {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ccc
+}
+.jbSurvey .optionsDiv input[type="checkbox"]:focus+label.checkmark {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px orange
+}
+.jbSurvey .optionsDiv input[type="checkbox"]:checked:focus+label.checkmark {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px orange
+}
+.jbSurvey .optionsDiv input[type="checkbox"]:checked+label.checkmark {
+    background: #306FAA;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px orange;
+}
+.jbSurvey .optionsDiv label.chxboxSelectionValue {
+    margin-left: -15px;
+    padding-left: 25px
+}
+
+.jbSurvey .optionsDiv input[type="checkbox"]:checked+label+label.chxboxSelectionValue {
+    text-decoration: underline;
+}
+/*********** End checkbox ***********/
